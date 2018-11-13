@@ -1,12 +1,12 @@
 {
-  "name": "react-table",
-  "version": "6.8.7-streamline",
+  "name": "react-table-pivot",
+  "version": "6.9.1",
   "description": "A fast, lightweight, opinionated table and datagrid built on React",
   "license": "MIT",
-  "homepage": "https://github.com/react-tools/react-table#readme",
+  "homepage": "https://github.com/pragmatos/react-table#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/react-tools/react-table.git"
+    "url": "git+https://github.com/pragmatos/react-table.git"
   },
   "keywords": [
     "react",
@@ -28,13 +28,13 @@
   "scripts": {
     "build:cjs": "babel src --out-dir lib --source-maps inline",
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --source-maps inline",
-    "build:umd": "cross-env BABEL_ENV=umd rollup -c",
-    "build:umd-min": "cross-env BABEL_ENV=umd NODE_ENV=production rollup -c",
+    "build1:umd": "cross-env BABEL_ENV=umd rollup -c",
+    "build1:umd-min": "cross-env BABEL_ENV=umd NODE_ENV=production rollup -c",
     "build:css": "rimraf react-table.css && stylus src/index.styl --compress -o react-table.css && yarn css:autoprefix",
     "css:autoprefix": "postcss --use autoprefixer react-table.css -r",
     "watch": "npm-run-all --parallel watch:*",
-    "watch:js": "onchange 'src/**/*.js' -i -- yarn build:cjs",
-    "watch:css": "onchange 'src/**/*.styl' -i -- yarn build:css",
+    "watch:js": "onchange \"src/**/*.js\" -i -- npm run build:cjs",
+    "watch:css": "onchange \"src/**/*.styl\" -i -- yarn build:css",
     "test": "eslint src",
     "build": "npm-run-all build:*",
     "prepublish": "yarn build",
@@ -43,7 +43,8 @@
     "docs:build": "yarn build && cd docs && yarn && yarn build"
   },
   "dependencies": {
-    "classnames": "^2.2.5"
+    "classnames": "^2.2.5",
+    "react-virtualized": "^9.21.0"
   },
   "peerDependencies": {
     "react": "^15.x.x || ^16.x.x",
