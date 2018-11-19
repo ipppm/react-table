@@ -103,6 +103,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       rowHeight,
       fixedColumnCount,
       onCountPerPage,
+      headerRowCount,
       style,
       getProps,
       getTableProps,
@@ -539,6 +540,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       if(!row) {
         return (
           <div
+            key={key}
             style={style}>
             {rowIndex}, {columnIndex}
           </div>
@@ -1533,10 +1535,10 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
             {({width, height}) => {
               const hasHorizontalScroll = rowMinWidth > width;
               const countHeaders = hasHeaderGroups ? headerGroupLayers.length : 0
-              const scrollWidth = hasHorizontalScroll ? scrollBarWidth: 0;
+              const scrollForBarWidth = hasHorizontalScroll ? scrollBarWidth: 0;
               const tFootHeight = hasColumnFooter ? rowHeight + 2 : 0;
-              const tHeaderHeight = countHeaders * rowHeight + rowHeight;
-              const spaceForBody = height - tHeaderHeight - tFootHeight - scrollWidth;
+              const tHeaderHeight = headerRowCount ? headerRowCount * rowHeight: countHeaders * rowHeight + rowHeight;
+              const spaceForBody = height - tHeaderHeight - tFootHeight - scrollForBarWidth;
               const { paddingBottom, pageSize } = calculateItemsPerPage(spaceForBody);
               const tBodyHeight = spaceForBody - paddingBottom
 
@@ -1546,7 +1548,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               }
               this._tableHeight = height;
 
-              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollWidth - tBodyHeight);
+              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollForBarWidth - tBodyHeight);
 
               return (<ScrollSync>
                 {({
@@ -1569,7 +1571,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       {...tableProps.rest}
                     >
                       {
-                        hasHeaderGroups ? makeHeaderColumnGroups(scrollLeft, width): null
+                        hasHeaderGroups ? makeHeaderColumnGroups(scrollLeft, width - scrollBarWidth): null
                       }
 
                       <TheadComponent
@@ -1593,7 +1595,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                           overscanRowCount={0}
                           rowHeight={rowHeight}
                           rowCount={1}
-                          width={width}
+                          width={width - scrollForBarWidth}
                           height={rowHeight}
                           enableFixedColumnScroll
                           enableFixedRowScroll
@@ -1609,6 +1611,8 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                           ...tBodyProps.style,
                           height: this._bodyHeight,
                         }}
+                        width={width}
+
                         {...tBodyProps.rest}>
                           <MultiGrid
                             ref={this.setGrid}
@@ -1661,7 +1665,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                           overscanRowCount={0}
                           rowHeight={rowHeight}
                           rowCount={1}
-                          width={width}
+                          width={width - scrollForBarWidth}
                           height={tFootHeight}
                           hideTopRightGridScrollbar
                           hideBottomLeftGridScrollbar
@@ -1678,6 +1682,10 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                             }
                             }>
                             <Grid
+                              style={{
+                                overflowY: 'hidden'
+                              }
+                              }
                               cellRenderer={cellCell}
                               columnCount={allVisibleColumns.length}
                               columnWidth={getWidth}
