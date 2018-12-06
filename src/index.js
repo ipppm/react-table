@@ -81,6 +81,10 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
   recomputeGrids = () => {
     this.grids.forEach((grid) => {
       grid.recomputeGridSize();
+      // grid.measureAllRows();
+      if(this.props.columns.length && this.props.data.length) {
+      }
+      // grid.forceUpdateGrids();
 
     });
   }
@@ -104,6 +108,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       fixedColumnCount,
       onCountPerPage,
       headerRowCount,
+      isPagination,
       style,
       getProps,
       getTableProps,
@@ -306,6 +311,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
     }
     const footerCellRender = ({columnIndex, rowIndex, key, style})=> {
       const column = allVisibleColumns[columnIndex];
+      const {indexesColumn, hidden} = column;
       const resizedCol = resized.find(x => x.id === column.id) || {}
       const show = typeof column.show === 'function' ? column.show() : column.show
       const width = _.getFirstDefined(resizedCol.value, column.width, column.minWidth)
@@ -329,6 +335,22 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
         ...columnProps.style,
         ...columnFooterProps.style,
       }
+      let addStyles = {};
+      if(indexesColumn) {
+        let width = 0;
+        width += indexesColumn.reduce((acc, index) => {
+          return acc + getWidth({index})
+        }, 0)
+
+        addStyles = {
+          width: _.asPx(width)
+        }
+      }
+      let visibility = hidden && 'hidden'
+      addStyles = {
+        ...addStyles,
+        visibility
+      }
 
       return (
         <TdComponent
@@ -337,6 +359,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           style={{
             ...styles,
             ...style,
+            ...addStyles
             // flex: `${width} 0 auto`,
             // width: _.asPx(width),
             // maxWidth: _.asPx(maxWidth),
@@ -485,8 +508,40 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
 
       // Return the cell
 
+      let columnWidth = 0;
+      let addStyles = {};
+      if(value) {
+        if(value.hidden) {
+          addStyles = {
+            visibility: 'hidden'
+          }
+        }
+      }
+      if(value && value.indexesColumn) {
+        columnWidth += value.indexesColumn.reduce((acc, index) => {
+          return acc + getWidth({index})
+        }, 0)
+        addStyles = {
+          width: _.asPx(columnWidth),
+          zIndex: 2
 
+        }
+      }
+      if(value && value.rowCount) {
+        addStyles = {
+          ...addStyles,
+          height: _.asPx(value.rowCount * rowHeight),
+          zIndex: value.rowCount
+
+        }
+      }
+      // if(rowIndex === 40 ) {
+      //   styles.backgroundColor = 'blue'
+      //   styles.border = '2px solid grey'
+      //   console.log(rowIndex, columnIndex, styles)
+      // }
       return (
+
         <TdComponent
           // eslint-disable-next-line react/no-array-index-key
           key={key}
@@ -499,9 +554,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           style={{
             ...styles,
             ...style,
-            // flex: `${width} 0 auto`,
-            // width: _.asPx(width),
-            // maxWidth: _.asPx(maxWidth),
+            ...addStyles
           }}
           {...tdProps.rest}
           {...columnProps.rest}
@@ -1535,10 +1588,10 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
             {({width, height}) => {
               const hasHorizontalScroll = rowMinWidth > width;
               const countHeaders = hasHeaderGroups ? headerGroupLayers.length : 0
-              const scrollForBarWidth = hasHorizontalScroll ? scrollBarWidth: 0;
-              const tFootHeight = hasColumnFooter ? rowHeight + 2 : 0;
+              const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
+              const tFootHeight = hasColumnFooter ? rowHeight : 0;
               const tHeaderHeight = headerRowCount ? headerRowCount * rowHeight: countHeaders * rowHeight + rowHeight;
-              const spaceForBody = height - tHeaderHeight - tFootHeight - scrollForBarWidth;
+              const spaceForBody = height - tHeaderHeight - tFootHeight - scrollBarWidth;
               const { paddingBottom, pageSize } = calculateItemsPerPage(spaceForBody);
               const tBodyHeight = spaceForBody - paddingBottom
 
@@ -1548,7 +1601,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               }
               this._tableHeight = height;
 
-              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollForBarWidth - tBodyHeight);
+              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollBarWidth - tBodyHeight);
 
               return (<ScrollSync>
                 {({
@@ -1571,7 +1624,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       {...tableProps.rest}
                     >
                       {
-                        hasHeaderGroups ? makeHeaderColumnGroups(scrollLeft, width - scrollBarWidth): null
+                        hasHeaderGroups ? makeHeaderColumnGroups(scrollLeft, width - scrollForBarWidth): null
                       }
 
                       <TheadComponent
@@ -1673,31 +1726,31 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       </TfootComponent>
 
                       {
-                        hasHorizontalScroll ?
-                          <div
+                        <div
+                          style={{
+                            order: 2,
+                            width,
+                            visibility: hasHorizontalScroll ? 'visible' : 'hidden',
+                            height: `${scrollBarWidth}px`
+                          }
+                          }>
+                          <Grid
                             style={{
-                              order: 2,
-                              width,
-                              height: `${scrollBarWidth}px`
+                              overflowY: 'hidden',
+
                             }
-                            }>
-                            <Grid
-                              style={{
-                                overflowY: 'hidden'
-                              }
-                              }
-                              cellRenderer={cellCell}
-                              columnCount={allVisibleColumns.length}
-                              columnWidth={getWidth}
-                              onScroll={onScroll}
-                              overscanColumnCount={0}
-                              rowHeight={scrollBarWidth}
-                              rowCount={1}
-                              width={width}
-                              height={scrollBarWidth}
-                            />
-                          </div>
-                          : null
+                            }
+                            cellRenderer={cellCell}
+                            columnCount={allVisibleColumns.length}
+                            columnWidth={getWidth}
+                            onScroll={onScroll}
+                            overscanColumnCount={0}
+                            rowHeight={scrollBarWidth}
+                            rowCount={1}
+                            width={width}
+                            height={scrollBarWidth}
+                          />
+                        </div>
                       }
                       {/*{hasColumnFooter ? makeColumnFooters() : null}*/}
                     </TableComponent>
