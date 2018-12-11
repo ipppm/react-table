@@ -595,7 +595,8 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           <div
             key={key}
             style={style}>
-            {rowIndex}, {columnIndex}
+            {/*{rowIndex}, {columnIndex}*/}
+            Loading...
           </div>
         );
       }
@@ -1586,7 +1587,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
 
           <AutoSizer>
             {({width, height}) => {
-              const hasHorizontalScroll = rowMinWidth > width;
+              const hasHorizontalScroll = Math.floor(rowMinWidth) > width;
               const countHeaders = hasHeaderGroups ? headerGroupLayers.length : 0
               const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
               const tFootHeight = hasColumnFooter ? rowHeight : 0;
@@ -1597,7 +1598,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
 
               if (allVisibleColumns.length && (this._tableHeight !== height || this._bodyHeight !== tBodyHeight)) {
                 this._bodyHeight = tBodyHeight
-                onCountPerPage && onCountPerPage(pageSize)
+                // onCountPerPage && onCountPerPage(pageSize)
               }
               this._tableHeight = height;
 
@@ -1665,7 +1666,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                           height: this._bodyHeight,
                         }}
                         width={width}
-
+                        pageSizeItems={pageSize}
                         {...tBodyProps.rest}>
                           <MultiGrid
                             ref={this.setGrid}
@@ -1740,6 +1741,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
 
                             }
                             }
+                            ref={this.setGrid}
                             cellRenderer={cellCell}
                             columnCount={allVisibleColumns.length}
                             columnWidth={getWidth}
