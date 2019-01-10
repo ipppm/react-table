@@ -3,10 +3,10 @@
   "version": "6.9.8",
   "description": "A fast, lightweight, opinionated table and datagrid built on React",
   "license": "MIT",
-  "homepage": "https://github.com/pragmatos/react-table#readme",
+  "homepage": "https://github.com/ipppm/react-table#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pragmatos/react-table.git"
+    "url": "git+https://github.com/ipppm/react-table"
   },
   "keywords": [
     "react",
