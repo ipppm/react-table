@@ -839,7 +839,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                 columnCount={headerGroups.length}
                 classNameBottomRightGrid={classnames('DisableScroll')}
                 classNameBottomLeftGrid={classnames('DisableScroll')}
-                fixedColumnCount={fixedColumnCount}
+                fixedColumnCount={fixedColumnCount ? 1 : 0}
                 columnWidth={getColumnWidth}
                 scrollLeft={scrollLeft}
                 overscanColumnCount={0}

@@ -1,6 +1,6 @@
 {
   "name": "ipppm-pivot",
-  "version": "6.9.10",
+  "version": "6.9.11",
   "description": "A fast, lightweight, opinionated table and datagrid built on React",
   "license": "MIT",
   "homepage": "https://github.com/ipppm/react-table#readme",
