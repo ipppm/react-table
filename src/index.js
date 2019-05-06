@@ -550,6 +550,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
             !show && 'hidden',
             cellInfo.expandable && 'rt-expandable',
             rowIndex % 2 === 0 ? '-odd' : '-even',
+            rowIndex === newTdProps.hoverItemIndex && 'pivot-hover-cell'
           )}
           style={{
             ...styles,
