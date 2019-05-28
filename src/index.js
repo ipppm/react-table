@@ -106,6 +106,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       itemsOnPage,
       rowHeight,
       fixedColumnCount,
+      isCenterTable,
       onCountPerPage,
       headerRowCount,
       isPagination,
@@ -1605,6 +1606,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               this._tableHeight = height;
 
               const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollBarWidth - tBodyHeight);
+              const marginTop = isCenterTable && (height / 2 -  tableHeight / 2);
 
               return (<ScrollSync>
                 {({
@@ -1622,7 +1624,8 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       style={{
                         ...tableProps.style,
                         height: tableHeight,
-                        width
+                        width,
+                        marginTop
                       }}
                       {...tableProps.rest}
                     >
