@@ -1594,10 +1594,11 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
               const tFootHeight = hasColumnFooter ? rowHeight : 0;
               const tHeaderHeight = headerRowCount ? headerRowCount * rowHeight: countHeaders * rowHeight + rowHeight;
-              let spaceForBody = height - tHeaderHeight - tFootHeight - scrollBarWidth;
-              spaceForBody = pageRows.length * rowHeight > spaceForBody ? spaceForBody : pageRows.length * rowHeight;
-              const { paddingBottom, pageSize } = calculateItemsPerPage(spaceForBody);
-              const tBodyHeight = spaceForBody - paddingBottom
+              let bodyHeight = height - tHeaderHeight - tFootHeight - scrollBarWidth;
+              
+              let spaceForBody = pageRows.length * rowHeight > bodyHeight ? bodyHeight : pageRows.length * rowHeight;
+              const { paddingBottom, pageSize } = calculateItemsPerPage(bodyHeight);
+              const tBodyHeight = spaceForBody - (bodyHeight >= spaceForBody ? 0: paddingBottom);
 
               if (allVisibleColumns.length && (this._tableHeight !== height || this._bodyHeight !== tBodyHeight)) {
                 this._bodyHeight = tBodyHeight
