@@ -839,6 +839,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                 key={rIndex}
                 cellRenderer={HeaderColumnCellRender}
                 columnCount={headerGroups.length}
+                styleBottomRightGrid={{overflow: 'hidden'}}
                 classNameBottomRightGrid={classnames('DisableScroll')}
                 classNameBottomLeftGrid={classnames('DisableScroll')}
                 fixedColumnCount={fixedColumnCount ? 1 : 0}
@@ -1591,7 +1592,8 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
             {({width, height}) => {
               const hasHorizontalScroll = Math.floor(rowMinWidth) > width;
               const countHeaders = hasHeaderGroups ? headerGroupLayers.length : 0
-              const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
+              // const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
+              const scrollForBarWidth = 0;
               const tFootHeight = hasColumnFooter ? rowHeight : 0;
               const tHeaderHeight = headerRowCount ? headerRowCount * rowHeight: countHeaders * rowHeight + rowHeight;
               let bodyHeight = height - tHeaderHeight - tFootHeight - scrollBarWidth;
@@ -1624,7 +1626,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       className={classnames(tableProps.className, currentlyResizing ? 'rt-resizing' : '')}
                       style={{
                         ...tableProps.style,
-                        height: tableHeight,
+                        // height: tableHeight,
                         width,
                         marginTop
                       }}
@@ -1644,6 +1646,10 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                       >
                         <MultiGrid
                           ref={this.setGrid}
+                          // styleTopLeftGrid={{overflow: 'hidden'}}
+                          // styleTopRightGrid={{overflow: 'hidden'}}
+                          // styleBottomLeftGrid={{overflow: 'hidden'}}
+                          styleBottomRightGrid={{overflowX: 'hidden'}}
                           cellRenderer={headerCellRender}
                           columnCount={allVisibleColumns.length}
                           classNameBottomRightGrid={classnames('DisableScroll')}
@@ -1677,19 +1683,22 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                         <MultiGrid
                           ref={this.setGrid}
                           className={classnames('DisableScroll')}
+                          // styleBottomRightGrid={{overflow: 'hidden'}}
                           classNameBottomRightGrid={classnames('DisableScroll')}
                           classNameBottomLeftGrid={classnames('DisableScroll')}
                           cellRenderer={cellRenderer}
                           columnCount={allVisibleColumns.length}
                           fixedColumnCount={fixedColumnCount}
                           columnWidth={getWidth}
-                          scrollLeft={scrollLeft}
-                          overscanColumnCount={0}
-                          overscanRowCount={2}
+                          // scrollLeft={scrollLeft}
+                          onScroll={onScroll}
+                          overscanColumnCount={5}
+                          overscanRowCount={20}
                           rowHeight={rowHeight}
                           rowCount={itemsOnPage}
                           width={width}
                           height={this._bodyHeight}
+                          // height={200}
                           enableFixedColumnScroll
                           enableFixedRowScroll
                           hideTopRightGridScrollbar
@@ -1716,6 +1725,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                           ref={this.setGrid}
                           cellRenderer={footerCellRender}
                           // className={styles.DisableScroll}
+                          styleBottomRightGrid={{overflow: 'hidden'}}
                           classNameBottomRightGrid={classnames('DisableScroll')}
                           columnCount={allVisibleColumns.length}
                           fixedColumnCount={fixedColumnCount}
@@ -1732,35 +1742,35 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                         />
                       </TfootComponent>
 
-                      {
-                        <div
-                          data-html2canvas-ignore
-                          style={{
-                            order: 2,
-                            width,
-                            visibility: hasHorizontalScroll ? 'visible' : 'hidden',
-                            height: `${scrollBarWidth}px`
-                          }
-                          }>
-                          <Grid
-                            style={{
-                              overflowY: 'hidden',
+                      {/*{*/}
+                      {/*  <div*/}
+                      {/*    data-html2canvas-ignore*/}
+                      {/*    style={{*/}
+                      {/*      order: 2,*/}
+                      {/*      width,*/}
+                      {/*      visibility: hasHorizontalScroll ? 'visible' : 'hidden',*/}
+                      {/*      height: `${scrollBarWidth}px`*/}
+                      {/*    }*/}
+                      {/*    }>*/}
+                      {/*    <Grid*/}
+                      {/*      style={{*/}
+                      {/*        overflowY: 'hidden',*/}
 
-                            }
-                            }
-                            ref={this.setGrid}
-                            cellRenderer={cellCell}
-                            columnCount={allVisibleColumns.length}
-                            columnWidth={getWidth}
-                            onScroll={onScroll}
-                            overscanColumnCount={0}
-                            rowHeight={scrollBarWidth}
-                            rowCount={1}
-                            width={width}
-                            height={scrollBarWidth}
-                          />
-                        </div>
-                      }
+                      {/*      }*/}
+                      {/*      }*/}
+                      {/*      ref={this.setGrid}*/}
+                      {/*      cellRenderer={cellCell}*/}
+                      {/*      columnCount={allVisibleColumns.length}*/}
+                      {/*      columnWidth={getWidth}*/}
+                      {/*      onScroll={onScroll}*/}
+                      {/*      overscanColumnCount={0}*/}
+                      {/*      rowHeight={scrollBarWidth}*/}
+                      {/*      rowCount={1}*/}
+                      {/*      width={width}*/}
+                      {/*      height={scrollBarWidth}*/}
+                      {/*    />*/}
+                      {/*  </div>*/}
+                      {/*}*/}
                       {/*{hasColumnFooter ? makeColumnFooters() : null}*/}
                     </TableComponent>
 
