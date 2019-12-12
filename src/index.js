@@ -109,6 +109,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
       isCenterTable,
       onCountPerPage,
       headerRowCount,
+      spaceScroll,
       isPagination,
       style,
       getProps,
@@ -1590,6 +1591,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
           <AutoSizer>
             {({width, height}) => {
               const hasHorizontalScroll = Math.floor(rowMinWidth) > width;
+              const spaceScrollHeight = hasHorizontalScroll ? spaceScroll: 0;
               const countHeaders = hasHeaderGroups ? headerGroupLayers.length : 0
               const scrollForBarWidth = hasHorizontalScroll && !isPagination ? scrollBarWidth: 0;
               const tFootHeight = hasColumnFooter ? rowHeight : 0;
@@ -1606,7 +1608,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               }
               this._tableHeight = height;
 
-              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollBarWidth - tBodyHeight);
+              const tableHeight = height - (height - tHeaderHeight - tFootHeight - scrollBarWidth - tBodyHeight) + spaceScrollHeight;
               const marginTop = isCenterTable && (height / 2 -  tableHeight / 2);
 
               return (<ScrollSync>
@@ -1739,6 +1741,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                             order: 2,
                             width,
                             visibility: hasHorizontalScroll ? 'visible' : 'hidden',
+                            marginTop: `${spaceScrollHeight || 0}px`,
                             height: `${scrollBarWidth}px`
                           }
                           }>
